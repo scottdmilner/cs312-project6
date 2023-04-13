@@ -169,8 +169,6 @@ class TSPSolver:
 
 		end_time = time.time()
 
-		print(bssf.route)
-
 		results['cost'] = bssf.cost
 		results['time'] = end_time - start_time
 		results['count'] = count
@@ -328,11 +326,11 @@ class TSPSolver:
 							TSPSolution(r[0:j] + r[k-1:j:-1] + [r[j]] + r[k:]),
 							TSPSolution(r[0:i] + r[k-1:i:-1] + [r[i]] + r[k:]),
 							# 2 inverted
-							TSPSolution(r[0:i] + r[j:k] + r[i:j] + r[k:]),
-							# 3 inverted
 							TSPSolution(r[0:i] + r[k-1:j:-1] + [r[j]] + r[i:j] + r[k:]),
 							TSPSolution(r[0:i] + r[j:k] + r[j-1:i:-1] + [r[i]]  + r[k:]),
 							TSPSolution(r[0:i] + r[j-1:i:-1] + [r[i]] + r[k-1:j:-1] + [r[j]] + r[k:]),
+							# 3 inverted
+							TSPSolution(r[0:i] + r[j:k] + r[i:j] + r[k:]),
 						]
 
 						newRoute = min(routes, key=lambda r: r.cost)
