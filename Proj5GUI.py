@@ -347,13 +347,10 @@ class Proj5GUI( QMainWindow ):
 	ALGORITHMS = [ \
 		('Default                            ','defaultRandomTour'), \
 		('Greedy','greedy'), \
-		('Greedy (All)', 'greedy_all'), \
-		# ('Bidirectional Greedy', 'bi_greedy_all'), \
-		('2-Opt Random', 'k2OptRandom'), \
+		('Best Greedy', 'greedy_best'), \
 		('2-Opt Ordered', 'k2OptOrdered'), \
 		('3-Opt Ordered', 'k3OptOrdered'), \
 		('Branch and Bound','branchAndBound'), \
-		('Fancy','fancy') \
 	]															# whitespace hack to get longest to display correctly
 
 	def initUI( self ):

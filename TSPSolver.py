@@ -133,7 +133,7 @@ class TSPSolver:
 		return results
 
 
-	def greedy_all( self,time_allowance=60.0 ):
+	def greedy_best( self,time_allowance=60.0 ):
 		results = {}
 		cities = self._scenario.getCities()
 		ncities = len(cities)
@@ -177,98 +177,6 @@ class TSPSolver:
 		results['total'] = None
 		results['pruned'] = None
 		return results
-	
-	def bi_greedy_all( self,time_allowance=60.0 ):
-		results = {}
-		cities = self._scenario.getCities()
-		ncities = len(cities)
-		count = 0
-		bssf = None
-		start_time = time.time()
-
-		# initialize dist array with distance values
-		dist = np.empty((ncities, ncities))
-		for i in range(ncities):
-			for j in range(ncities):
-				dist[i,j] = cities[i].costTo(cities[j])
-		
-		solns = []
-		for start_city in range(ncities):
-			curr = dist.copy()
-			# initialize path
-			path = deque([start_city])
-			curr[:,start_city] = np.inf
-			while len(path) < ncities:
-				# find shortest adjacent path
-				bstart = path[-1]
-				fstart = path[0]
-				ftarget = np.argmin(curr[:,fstart])
-				btarget = np.argmin(curr[bstart,:])
-				
-				# cross off newly unavailable paths
-				if curr[ftarget,fstart] < curr[bstart,btarget]:
-					path.appendleft(ftarget)
-					curr[ftarget,:] = np.inf
-					curr[:,fstart] = np.inf
-					curr[fstart,ftarget] = np.inf
-				else:
-					path.append(btarget)
-					curr[bstart,:] = np.inf
-					curr[:,btarget] = np.inf
-					curr[btarget,bstart] = np.inf
-			
-			solns.append(TSPSolution([cities[i] for i in path]))
-		
-		bssf = min(solns, key=lambda s: s.cost)
-
-		end_time = time.time()
-
-		results['cost'] = bssf.cost
-		results['time'] = end_time - start_time
-		results['count'] = count
-		results['soln'] = bssf
-		results['max'] = None
-		results['total'] = None
-		results['pruned'] = None
-		return results
-
-
-	def k2OptRandom( self, time_allowance=60.0 ):
-		results = {}
-		cities = self._scenario.getCities()
-		ncities = len(cities)
-		count = 0
-		start_time = time.time()
-		bssf = self.greedy_all()['soln']
-
-		# initialize dist array with distance values
-		dist = np.empty((ncities, ncities))
-		for i in range(ncities):
-			for j in range(ncities):
-				dist[i,j] = cities[i].costTo(cities[j])
-
-		while time.time()-start_time < time_allowance:
-			c2 = randrange(ncities)
-			d2 = randrange(ncities)
-			if c2 > d2:
-				c2,d2 = d2,c2
-			c1 = c2 - 1
-			d1 = d2 - 1
-
-			newRoute = TSPSolution(bssf.route[0:c1] + [bssf.route[c1]] + bssf.route[d1:c1:-1] + bssf.route[d2:])
-			if newRoute.cost < bssf.cost:
-				bssf = newRoute
-				count += 1
-		end_time = time.time()
-
-		results['cost'] = bssf.cost
-		results['time'] = end_time - start_time
-		results['count'] = count
-		results['soln'] = bssf
-		results['max'] = None
-		results['total'] = None
-		results['pruned'] = None
-		return results
 
 
 	def k2OptOrdered( self, time_allowance=60.0 ):
@@ -277,7 +185,7 @@ class TSPSolver:
 		ncities = len(cities)
 		count = 0
 		start_time = time.time()
-		bssf = self.greedy_all()['soln']
+		bssf = self.greedy_best()['soln']
 
 		while time.time() - start_time < time_allowance:
 			for i in range(-1, ncities - 1):
@@ -304,14 +212,21 @@ class TSPSolver:
 		results['pruned'] = None
 		return results
 
-
+	''' <summary>
+	This is the entry point for the algorithm you'll write for your group project.
+	</summary>
+	<returns>results dictionary for GUI that contains three ints: cost of best solution,
+	time spent to find best solution, total number of solutions found during search, the
+	best solution found.  You may use the other three field however you like.
+	algorithm</returns>
+	'''
 	def k3OptOrdered( self, time_allowance=60.0 ):
 		results = {}
 		cities = self._scenario.getCities()
 		ncities = len(cities)
 		count = 0
 		start_time = time.time()
-		bssf = self.greedy_all()['soln']
+		bssf = self.greedy_best()['soln']
 
 		while time.time() - start_time < time_allowance:
 			for i in range(-1, ncities - 2):
@@ -403,9 +318,8 @@ class TSPSolver:
 		maxQSize = 0
 		stateCount = 1
 		pruneCount = 1
-		# bssf = self.defaultRandomTour()['soln']
 		start_time = time.time()
-		bssf = self.greedy_all()['soln']
+		bssf = self.greedy_best()['soln']
 		
 		# initialize dist array with distance values
 		dist = np.empty((ncities, ncities))
@@ -471,16 +385,3 @@ class TSPSolver:
 		results['pruned'] = pruneCount
 		print(results)
 		return results
-
-
-	''' <summary>
-		This is the entry point for the algorithm you'll write for your group project.
-		</summary>
-		<returns>results dictionary for GUI that contains three ints: cost of best solution,
-		time spent to find best solution, total number of solutions found during search, the
-		best solution found.  You may use the other three field however you like.
-		algorithm</returns>
-	'''
-
-	def fancy( self,time_allowance=60.0 ):
-		pass
