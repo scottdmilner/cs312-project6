@@ -264,13 +264,13 @@ class TSPSolver:
 							bssf = newRoute
 							count += 1
 							break
-					else:
+					else:  # if we didn't break out early, keep looping
 						continue
-					break
-				else:
+					break  # if we broke out early, break out again
+				else:      # if we didn't break out early, keep looping
 					continue
-				break
-			else:
+				break      # if we broke out early, break out again
+			else:          # if we made it through all for loops, break out of while loop
 				break
 
 		end_time = time.time()
