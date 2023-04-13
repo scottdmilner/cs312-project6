@@ -348,8 +348,8 @@ class Proj5GUI( QMainWindow ):
 		('Default                            ','defaultRandomTour'), \
 		('Greedy','greedy'), \
 		('Best Greedy', 'greedy_best'), \
-		('2-Opt Ordered', 'k2OptOrdered'), \
-		('3-Opt Ordered', 'k3OptOrdered'), \
+		('2-Opt', 'k2OptOrdered'), \
+		('3-Opt', 'k3OptOrdered'), \
 		('Branch and Bound','branchAndBound'), \
 	]															# whitespace hack to get longest to display correctly
 

@@ -132,6 +132,15 @@ class TSPSolver:
 		results['pruned'] = None
 		return results
 
+	''' <summary>
+		This is the entry point for the greedy_best solver. This computes a greedy solution
+		for each city, then picks the best one
+		</summary>
+		<returns>results dictionary for GUI that contains three ints: cost of best solution,
+		time spent to find best solution, total number of solutions found, the best
+		solution found, and three null values for fields not used for this
+		algorithm</returns>
+	'''
 
 	def greedy_best( self,time_allowance=60.0 ):
 		results = {}
@@ -188,17 +197,18 @@ class TSPSolver:
 		bssf = self.greedy_best()['soln']
 
 		while time.time() - start_time < time_allowance:
-			for i in range(-1, ncities - 1):
-				for j in range(i + 1, ncities):
-					newRoute = TSPSolution(bssf.route[0:i] + [bssf.route[i]] + bssf.route[j:i:-1] + bssf.route[j+1:])
+			for i in range(-1, ncities - 1):      # iterate through cities
+				for j in range(i + 1, ncities):   # iterate through cities > i
+					r = bssf.route
+					newRoute = TSPSolution(r[0:i] + [r[i]] + r[j:i:-1] + r[j+1:])
 					if newRoute.cost < bssf.cost:
 						bssf = newRoute
 						count += 1
 						break
-				else:
+				else:  # if we didn't break out early, keep looping
 					continue
-				break
-			else:
+				break  # if we broke out early, break out again
+			else:      # if we made it through all for loops, break out of while loop
 				break
 
 		end_time = time.time()
@@ -229,22 +239,22 @@ class TSPSolver:
 		bssf = self.greedy_best()['soln']
 
 		while time.time() - start_time < time_allowance:
-			for i in range(-1, ncities - 2):
-				for j in range(i + 1, ncities - 1):
-					for k in range(j + 1, ncities):
+			for i in range(-1, ncities - 2):         # iterate through cities
+				for j in range(i + 1, ncities - 1):  # iterate through cities > i
+					for k in range(j + 1, ncities):  # iterate through cities > j
 						r = bssf.route
-						routes = [
-							# 0 inverted
+						routes = [  # enumerate possible rearrangements
+							# 0 subtours inverted
 							bssf,
-							# 1 inverted
+							# 1 subtour inverted
 							TSPSolution(r[0:i] + r[j-1:i:-1] + [r[i]] + r[j:]),
 							TSPSolution(r[0:j] + r[k-1:j:-1] + [r[j]] + r[k:]),
 							TSPSolution(r[0:i] + r[k-1:i:-1] + [r[i]] + r[k:]),
-							# 2 inverted
+							# 2 subtours inverted
 							TSPSolution(r[0:i] + r[k-1:j:-1] + [r[j]] + r[i:j] + r[k:]),
 							TSPSolution(r[0:i] + r[j:k] + r[j-1:i:-1] + [r[i]]  + r[k:]),
 							TSPSolution(r[0:i] + r[j-1:i:-1] + [r[i]] + r[k-1:j:-1] + [r[j]] + r[k:]),
-							# 3 inverted
+							# 3 subtours inverted
 							TSPSolution(r[0:i] + r[j:k] + r[i:j] + r[k:]),
 						]
 
@@ -289,15 +299,15 @@ class TSPSolver:
 			   Duplicate the backtrace array and append the new target city"""
 			for i in range(len(dist)): # rows
 				m = np.amin(dist[i,:])
-				if m == np.inf: continue
-
+				if m == np.inf: 
+					continue
 				dist[i] -= m
 				L += m
 			
 			for j in range(len(dist)): # columns
 				m = np.amin(dist[:,j])
-				if m == np.inf: continue
-
+				if m == np.inf: 
+					continue
 				dist[:,j] -= m
 				L += m
 			
